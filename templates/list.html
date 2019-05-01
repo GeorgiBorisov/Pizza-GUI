@@ -1,0 +1,19 @@
+<main>
+    <div class="container-fluid list">
+        <div class="container">
+           <ul class="pizza-list">
+                <@pizza@><li>
+                    <a href="/menu/{{urlName}}" class="pizza">
+                        <div class="brief-info">
+                            <h2>{{name}} {{price}}</h2>
+                            <h4>Weight {{weight}}</h4>
+                        </div> 
+                        <div class="pizza-img-wrapper">
+                            <img src="../public/pictures/{{urlName}}.jpeg" alt="">
+                        </div> 
+                    </a>
+                </li><#pizza#>
+           </ul>
+        </div>
+    </div>
+</main>

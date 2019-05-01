@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./public/style.css">
+    <title>{{title}}</title>
+</head>
+<body>
+    <div class="container-fluid auth-wrapper hidden">
+        <div class="login hidden">
+            <a href="#" class="close-modal"></a>
+            <form id="log" action="api/tokens" method="POST">
+                <div>
+                    <label id="phoneLogin" for="phone">Phone</label>
+                    <input type="text" name="phone">
+                </div>
+                <div>
+                    <label id="passLogin" for="password">Password</label>
+                    <input type="password" name="password">
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <div class="register hidden">
+            <a href="#" class="close-modal"></a>
+            <form id="reg" action="api/users" method="POST">
+                <div>
+                    <label id="firstName" for="firstName">First name</label>
+                    <input type="text" name="firstName">
+                </div>
+                
+                <div>
+                    <label id="lastName" for="lastName">Last name</label>
+                    <input type="text" name="lastName">
+                </div>
+                <div>
+                    <label id="phone" for="phone">Phone</label>
+                    <input type="text" name="phone">
+                </div>
+                <div>
+                    <label id="pass" for="password">Password</label>
+                    <input type="password" name="password">
+                </div>
+                <div>
+                    <label id="address" for="address">Address</label>
+                    <input type="text" name="address">
+                </div>
+                <div>
+                    <label id="email" for="email">E-mail</label>
+                    <input type="email" name="email">
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+        <div class="edit hidden">
+            <a href="#" class="close-modal"></a>
+            <form id="upd" action="api/users" method="POST">
+                <div>
+                    <label id="firstNameUpdate" for="firstNameUpdate">First name</label>
+                    <input type="text" name="firstNameUpdate">
+                </div>
+                <div>
+                    <label id="lastNameUpdate" for="lastNameUpdate">Last name</label>
+                    <input type="text" name="lastNameUpdate">
+                </div>
+                <div>
+                    <label id="phoneUpdate" for="phoneUpdate">Phone</label>
+                    <input disabled type="text" name="phoneUpdate">
+                </div>
+                <div>
+                    <label id="passOld" for="passOld">Old password</label>
+                    <input type="password" name="passOld"">
+                </div>
+                <div>
+                    <label id="passNew" for="passNew">New password</label>
+                    <input type="password" name="passNew">
+                </div>
+                <div>
+                    <label id="addressUpdate" for="addressUpdate">Address</label>
+                    <input type="text" name="addressUpdate">
+                </div>
+                <div>
+                    <label id="emailUpdate" for="emailUpdate">E-mail</label>
+                    <input type="email" name="emailUpdate">
+                </div>
+                <button type="submit">Update profile</button>
+            </form>
+        </div>
+    </div>
+    <header>
+        <div class="container-fluid">
+            <div class="row main-menu-wrapper">
+                <ul class="main-menu">
+                    <li class="menu-item"><a href="/">Home</a></li>
+                    <li class="menu-item credentials"><a id="register" href="#">Register</a></li>
+                    <li class="menu-item credentials"><a id="login" href="#">Login</a></li>
+                    <li class="menu-item loged hidden"><a href="/">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>

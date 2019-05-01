@@ -1,0 +1,26 @@
+<main>
+    <div class="container-fluid cart">
+        <div class="row">
+            <h2 class="cart-heading">{{heading}}</h2>
+        </div>
+        <@pizza@><div class="row cart-item-wrapper">
+            <div class="col-md-5 cart-item">{{name}}</div>
+            <div class="col-md-2 cart-item-qty">x{{qty}}</div>
+            <div class="col-md-2 cart-item-price">$ {{price}}</div>
+            <div class="col-md-2 cart-item-price">$ {{total}}</div>
+            <div class="col-md-1 "><span class="cart-remove-item">&times;</span></div>
+        </div><#pizza#>
+        <div class="row">
+            <p class="grand-total">Total: <span class="grand">$ {{grandTotal}}</span></p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 offset-md-2">
+                <button class="order-button purchase" type="button">Purchase</button>  
+            </div>
+            <div class="col-md-4">
+                <a href="/menu"><button class="order-button" type="button">Menu</button></a>  
+            </div>
+        </div>
+    </div>
+</main>
+   

@@ -1,0 +1,46 @@
+<main>
+    <div class="container-fluid single-pizza">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="about-pizza">
+                        {{description}}
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 single-pizza-img">
+                    <img src="./public/pictures/{{urlName}}.jpeg" alt="">
+                </div>
+                <div class="col-md-6 details">
+                    <h2 class="pizza-name">{{name}}</h2>
+                    <p class="pizza-price">$ {{price}}</p>
+                    <p class="pizza-price">{{weight}}</p>
+                    <ul class="ingredients">
+                        <!-- <li>{{ingredient}}</li> -->
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="/cart"><button class="order-button" type="button">View Cart</button></a>
+                </div>
+                <div class="col-md-3">
+                    <button class="order-button add-to-cart" type="button">Add to cart</button>  
+                </div>
+                <div class="col-md-3">
+                      <a href="/menu"><button class="order-button" type="button">Menu</button></a>  
+                </div>
+                <div class="col-md-1">
+                    <div class="order-button quantity">1</div>
+                </div>
+                <div class="col-md-1">
+                    <button class="order-button add" type="button"> + </button>
+                </div>
+                <div class="col-md-1">
+                    <button class="order-button remove" type="button"> - </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
