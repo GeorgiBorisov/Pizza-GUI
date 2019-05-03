@@ -28,7 +28,6 @@ templates.addTemplate = (file, data, callback) => {
 
 templates.embed = (template, data) => {
     for (const key in data) {
-        console.log(key)
         template = template.replace(`{{${key}}}`, data[key])
         if(typeof(data[key]) === 'object') {
             let startLabel = `<@${key}@>`

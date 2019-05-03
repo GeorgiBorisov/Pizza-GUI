@@ -7,7 +7,6 @@ let selected
 
 Array.from(credentials).forEach((el) => {
     el.addEventListener('click', (e) => {
-        
         selected = el.children[0].text.toLowerCase()
         doc.getElementsByClassName('auth-wrapper')[0].classList.toggle('hidden')
         doc.getElementsByClassName(e.path[0].id)[0].classList.toggle('hidden')
@@ -65,42 +64,68 @@ if(doc.getElementsByClassName('quantity')[0]){
         }).catch(err => {console.log(err)})
     })
 }
+//Remove items from a cart and update the cart after
 if(doc.getElementsByClassName('cart')){
     const cartItems = doc.getElementsByClassName('cart-remove-item')
     const cart = doc.getElementsByClassName('cart')[0]
     Array.from(cartItems).forEach((item) => {
-    item.addEventListener('click', () => {
-        const toBeRemoved = item.parentElement.parentElement
-        const dataToRemove = {
-            name: toBeRemoved.children[0].innerHTML,
-            qty: toBeRemoved.children[1].innerHTML.slice(1)
+        item.addEventListener('click', () => {
+            const toBeRemoved = item.parentElement.parentElement
+            const dataToRemove = {
+                name: toBeRemoved.children[0].innerHTML,
+                qty: toBeRemoved.children[1].innerHTML.slice(1)
+            }
+            const grand = doc.getElementsByClassName('grand')[0].innerHTML.split(' ')
+            const toSubtract = toBeRemoved.children[3].innerHTML.split(' ')
+            cart.removeChild(toBeRemoved)
+            let newTotal = parseFloat(grand[1]) - parseFloat(toSubtract[1])
+            doc.getElementsByClassName('grand')[0].innerHTML = '$ ' + newTotal.toFixed(2)
+            fetch(`${app.conf.baseUrl}/removeFromCart`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': `${app.conf.sessionToken.tokenId}`
+                },
+                body: JSON.stringify(dataToRemove)
+            }).catch(err => {console.log(err)})
+        })
+    })
+}
+//Purchase the items present in the user's cart
+if(doc.getElementsByClassName('purchase').length > 0){
+    doc.getElementsByClassName('purchase')[0].addEventListener('click', () => {
+        let order = {
+            data: {}
         }
-        const grand = doc.getElementsByClassName('grand')[0]
-        const toSubtract = toBeRemoved.children[0].innerHTML
-        cart.removeChild(toBeRemoved)
-        console.log(grand.innerHTML)
-        console.log(toSubtract[1])
-        grand.innerHTML = parseFloat(grand.innerHTML) - parseFloat(toSubtract[1])
-        fetch(`${app.conf.baseUrl}/removeFromCart`, {
-            method: 'PUT',
+        const pizzas = doc.getElementsByClassName('cart-item-wrapper')
+        Array.from(pizzas).forEach((item) => {
+            console.log(item.children)
+            order.data[item.children[0].innerHTML] = item.children[1].innerHTML.slice(1)
+        })
+        fetch(`${app.conf.baseUrl}purchase`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'token': `${app.conf.sessionToken.tokenId}`
             },
-            body: JSON.stringify(dataToRemove)
+            body: JSON.stringify(order)
         }).then(res => {
-            if(res.ok) {
-                app.message('primary', 'Added to cart!')
-            }
+            res.ok ? console.log('OK') : console.log('ERROR')
         }).catch(err => {console.log(err)})
-        console.log(dataToRemove.qty)
+        //console.log(doc.getElementsByClassName('cart-item-wrapper')[0].children)
     })
-})
 }
 
+if (doc.getElementById('delete')) {
+    doc.getElementById('delete').addEventListener('click', (e) => {
+        doc.getElementsByClassName('auth-wrapper')[0].classList.toggle('hidden')
+        doc.getElementsByClassName('delete')[0].classList.toggle('hidden')
+        selected = e.path[0].id
+    })
+}
 
 const app = {}
-
+//Send a flash message to the user
 app.message = (type, msgTxt) => {
     let msg = doc.createElement('div')
     msg.classList.add(`alert`, `alert-${type}`)
@@ -109,7 +134,7 @@ app.message = (type, msgTxt) => {
     doc.getElementsByClassName('alert')[0].addEventListener('click', fadeOut())
     return
 }
-
+//Messages fade out effect
 const fadeOut = () => {
     setTimeout(()=> {
         const target = doc.getElementsByClassName('alert')[0]
@@ -135,9 +160,11 @@ app.conf = {
 }
 
 app.client = {}
-
+//handle requests from forms
 app.client.req = (headers, path, method, queryStrObj, reqBody, callback) => {
+    //Acceptable query methods
     const reqMethods = ["POST", 'GET', 'PUT', 'DELETE']
+    //Check the validity of the incomming data
     headers = typeof(headers) == 'object' && 
         headers !== null ? headers : {}
     path = typeof(path) == 'string' ? path : '/'
@@ -155,7 +182,9 @@ app.client.req = (headers, path, method, queryStrObj, reqBody, callback) => {
         reqUrl += '?'
     }
     let count = 0 
+    //Inirialize header object
     const reqHeaders = {}
+    //Set the headers
     reqHeaders['Content-Type'] = 'application/json'
     for (const header in headers) {
         reqHeaders.header = headers[header]
@@ -163,6 +192,7 @@ app.client.req = (headers, path, method, queryStrObj, reqBody, callback) => {
     if (app.conf.sessionToken) {
         reqHeaders['token'] = app.conf.sessionToken.tokenId
     }
+    //Create the queqy string
     for (const queryKey in queryStrObj) {
         count ++
         if (count > 1) {
@@ -170,10 +200,12 @@ app.client.req = (headers, path, method, queryStrObj, reqBody, callback) => {
         }
         reqUrl += queryKey + '=' + queryStrObj[queryKey]
     }
+    //Make the AJAX query
     fetch(reqUrl, {
         method: method,
         headers: reqHeaders,
         body: JSON.stringify(reqBody)
+    //Handle the AJAX response
     }).then(response => {
         response.json()
         .then(data => {
@@ -181,7 +213,8 @@ app.client.req = (headers, path, method, queryStrObj, reqBody, callback) => {
         })
     })
 }
-
+//Set event listeners to all forms
+//If an event listener is triggered get the form data
 app.bindForms = () => {
     if (doc.querySelectorAll('form')) {
         let forms = doc.querySelectorAll('form')
@@ -200,7 +233,10 @@ app.bindForms = () => {
                 }
                 if(id == 'upd'){
                     method = 'PUT'
+                } else if (id == 'del') {
+                    method = 'DELETE'
                 }
+                //Send the AJAX request
                 app.client.req(undefined, path, method, undefined, request, (statusCode, response) => {
                     if(statusCode !== 200 && statusCode !== 201) {
                         console.log(response.Error)
@@ -212,7 +248,7 @@ app.bindForms = () => {
         })
     }
 }
-
+//Handle form response
 app.responseHandler = (id, req, res) => {
     let credentials = {
         'phone': req.phone,
@@ -234,9 +270,12 @@ app.responseHandler = (id, req, res) => {
     } else if (id == 'upd') {
         doc.getElementsByClassName(selected)[0].classList.toggle('hidden')
         doc.getElementsByClassName('auth-wrapper')[0].classList.toggle('hidden')
+    } else if (id == 'del') {
+       app.logout()
+       location.href = '/'
     }
 }
-
+//Log the user in
 app.loggedIn = (token) => {
     app.setSessionToken(token)
     if(doc.getElementsByClassName('welcome')[0] !== undefined){
@@ -253,19 +292,20 @@ app.loggedIn = (token) => {
     }
     doc.querySelector('input').value = ''
 }
-
+//Set the session token
 app.setSessionToken = (token) => {
     doc.cookie = `token=${token.tokenId}; expires=${token.expires}`
     app.conf.sessionToken = token;
     let tokenString = JSON.stringify(token)
     sessionStorage.setItem('token',tokenString)
 }
-
+//Get the session token
 app.getSessionToken = () => {
     const tokenStr = sessionStorage.getItem('token') 
-    if (typeof(tokenStr) == 'string') {
+    if (tokenStr && typeof(tokenStr) == 'string') {
         try {
             const token = JSON.parse(tokenStr)
+            //Check if the available session token is still valid
             fetch(`${app.conf.baseUrl}api/tokens?id=${token.tokenId}`, {
                 method: 'GET',
                 headers: {
@@ -288,7 +328,7 @@ app.getSessionToken = () => {
         }
     }
 }
-
+//Get user profile information in order to update the profile of the user
 app.getUser = () => {
     const session = sessionStorage.getItem('token')
     const token = JSON.parse(session)
@@ -312,7 +352,7 @@ app.getUser = () => {
     })
            
 }
-
+//Log the useer out and clear the cookies and session storage
 app.logout = () => {
     const tokenStr = sessionStorage.getItem('token')
     const token = JSON.parse(tokenStr)
@@ -350,11 +390,12 @@ window.onload = () => {
     doc.getElementsByClassName('loged')[0].addEventListener('click', () => {
         app.logout()
     })
+    //If cookies are present, but token is not, clear the cookies
     if(!app.conf.sessionToken){
         doc.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
     }
 }
-
+//Clear the cookies and session storage after the browser is closed
 if(window.closed){
     sessionStorage.clear()
     doc.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`

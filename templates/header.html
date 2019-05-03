@@ -24,6 +24,20 @@
                 <button type="submit">Login</button>
             </form>
         </div>
+        <div class="delete hidden">
+            <a href="#" class="close-modal"></a>
+            <form id="del" action="api/users" method="POST">
+                <div>
+                    <label id="phoneDel" for="phone">Phone</label>
+                    <input type="text" name="phone">
+                </div>
+                <div>
+                    <label id="passDel" for="password">Password</label>
+                    <input type="password" name="password">
+                </div>
+                <button type="submit">Delete profile</button>
+            </form>
+        </div>
         <div class="register hidden">
             <a href="#" class="close-modal"></a>
             <form id="reg" action="api/users" method="POST">

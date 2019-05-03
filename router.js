@@ -173,10 +173,25 @@ router.user.delete = (data, callback) => {
         phone: data.reqBody.phone,
         password: data.reqBody.password,
     }
+    console.log(data)
     validator.validateRequest(input, data.method, (reqValid, reqData) => {
         if (reqValid) {
-            crud.delete('orders', reqData.phone, err => {
-                if (!err) {
+            crud.read('orders', reqData.phone, (err, orders) => {
+                if (!err && orders) {
+                    crud.delete('orders', reqData.phone, err => {
+                        if (!err) {
+                            crud.delete('users', reqData.phone, err => {
+                                if (!err) {
+                                    callback(200, {'Message':'The user\'s profile was deleted. All orders which were not completed are still considered valid'})
+                                } else {
+                                    callback(500, {'Error': 'Could not delete the user\'s profile'})
+                                }
+                            })
+                        } else {
+                            callback(500, {'Error': 'Could not delete user\'s orders'})
+                        }
+                    })
+                } else {
                     crud.delete('users', reqData.phone, err => {
                         if (!err) {
                             callback(200, {'Message':'The user\'s profile was deleted. All orders which were not completed are still considered valid'})
@@ -184,10 +199,9 @@ router.user.delete = (data, callback) => {
                             callback(500, {'Error': 'Could not delete the user\'s profile'})
                         }
                     })
-                } else {
-                    callback(500, {'Error': 'Could not delete user\'s orders'})
                 }
             })
+            
         } else {
             callback(400, {'Error': 'Missing required fields'})
         }
@@ -371,11 +385,21 @@ router.order = {}
 //Create new order
 //Required data phone, token, order items
 router.order.post = (data, callback) => {
-    let input = {
-        phone: data.reqBody.phone,
-        token: data.headers.token,
-        orderItems: data.reqBody.orderItems
-    }
+    console.log(data)
+    let input = {}
+    if (data.reqBody) {
+        input = {
+            phone: data.reqBody.phone,
+            token: data.headers.token,
+            orderItems: data.reqBody.orderItems
+        }
+    } else {
+        input = {
+            phone: data.phone,
+            token: data.token,
+            orderItems: data.orderItems
+        }
+    } 
     validator.validateRequest(input, data.method, (reqValid, reqData) => {
         if (reqValid) {
             validator.validateToken(reqData.phone, reqData.token, (tokenIsValid) => {
@@ -392,9 +416,11 @@ router.order.post = (data, callback) => {
                                     crud.create('orders', reqData.phone, currentOrder, err => {
                                         if (!err) {
                                             api.payment(reqData.phone, orderId, reqData.orderItems, response => {
-                                                callback(response)       
+                                                callback(response)   
+                                                console.log(response)    
                                             })
                                         } else {
+                                            console.log(err)
                                             callback(500, {'Error': 'Could not create an order'})
                                         }
                                     })

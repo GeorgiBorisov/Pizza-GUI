@@ -28,7 +28,7 @@ const env = {
     //Mailgun sender email
     mailgunSender: 'MAILGUN SENDER',
     //Mailgun message URL
-    messageURL: `/v3/${this.mailgunSender}/messages`,
+    messageURL: `/v3/MAILGUN SENDER/messages`,
     //Mailgun API key
     mailgunKey: 'MAILGUN KEY',
    

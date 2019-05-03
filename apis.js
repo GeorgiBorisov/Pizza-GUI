@@ -73,6 +73,7 @@ api.mailReceipt = (email, orderId, orderItems, callback) => {
                 'subject': `Payment fo order ${orderId}`,
                 'text': order
             })
+            
             //Specify the request details
             const reqDetails = {
                 'protocol': 'https:',
@@ -85,6 +86,7 @@ api.mailReceipt = (email, orderId, orderItems, callback) => {
                     'Content-Length': Buffer.byteLength(receiptData)
                 }
             }
+            console.log(reqDetails)
             //Make the actual request
             apiRequest(reqDetails, receiptData, result => { 
                 console.log('api response for receipt '+result)

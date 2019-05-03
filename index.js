@@ -24,7 +24,6 @@ const server = http.createServer((req, res) => {
     let singleReq = true
     //Save the request body to a buffer
     let cookie = req.headers.cookie
-    //console.log(req.url)
     if(req.url != '/' && cookie == undefined && req.url.indexOf('/public') == -1) {
         if((req.url == '/api/users' || req.url == '/api/tokens') && req.method == 'POST'){
             singleReq = true
@@ -107,6 +106,7 @@ const routes = {
     'clearCart': guiRouter.clearCart,
     'removeFromCart': guiRouter.removeFromCart,
     'cart': guiRouter.getCart,
+    'purchase': guiRouter.purchase,
     'api/users': apiRouter.users,
     'api/tokens': apiRouter.tokens,
     'api/products': apiRouter.products,

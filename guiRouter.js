@@ -1,7 +1,7 @@
 //Include the required node modules
 const crud = require('./data')
 const validator = require('./validator')
-const apis = require('./apis')
+const router = require('./router')
 const templates = require('./engine')
 const templateGlobals = require('./storage/templateGlobals.json')
 
@@ -177,7 +177,7 @@ guiRouter.getCart = (data, callback) => {
                                     total: parseFloat(
                                         (parseFloat((cartData[pizza]).toFixed(2)) * 
                                         parseFloat((menuData[pizza].price).toFixed(2)))
-                                    .toFixed(2))
+                                        .toFixed(2))
                                 }
                                 total += templateData.pizza[pizza].total
                             }
@@ -234,5 +234,31 @@ guiRouter.removeFromCart = (data, callback) => {
             callback(400)
         }
     })
+}
+guiRouter.purchase = (data, callback) => {
+    if (data.method == 'post') {
+        crud.read('tokens', data.headers.token, (err, tokenData) => {
+            if (!err && tokenData) {
+                const order = {
+                    phone: tokenData.phone,
+                    token: data.headers.token,
+                    orderItems: data.reqBody.data
+                }
+                router.order.post(order, res => {
+                    if (res) {
+                        // console.log(res)
+                    } else {
+                        
+                    }
+                })
+            } else {
+                console.log(err)
+            }
+        })
+        //console.log(data)
+        callback(200)
+    } else {
+        callback(405)
+    }
 }
 module.exports = guiRouter
