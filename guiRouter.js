@@ -7,9 +7,9 @@ const templateGlobals = require('./storage/templateGlobals.json')
 
 //Initialize router
 let guiRouter = {}
+
+//Get the home page
 guiRouter.index = (data, callback) => {
-    //console.log(path.parse(data.path))
-    //path.normalize(__dirname + '/public' + )
     if (data.method == 'get') {
         const templateData = {
             title: 'Homepage',
@@ -27,7 +27,7 @@ guiRouter.index = (data, callback) => {
         callback(405, undefined, 'html')
     }
 }
-
+//Get the static assets 
 guiRouter.public = (data, callback) => {
     if (data.method == 'get') {
         let assetName = data.path.replace('public/' , '').trim()
@@ -65,7 +65,7 @@ guiRouter.public = (data, callback) => {
         callback(405)
     }
 }
-
+//Get the menu page
 guiRouter.menu = (data, callback) => {
     if (data.method == 'get') {
         crud.read('menu', 'menu', (err, menuData) => {
@@ -89,7 +89,7 @@ guiRouter.menu = (data, callback) => {
         callback(405)
     }
 }
-
+//Get the view about a single pizza, displaying the selected item
 guiRouter.singlePizza = (data, callback) => {
     if (data.method == 'get') {
         const templateData = {}
@@ -128,6 +128,8 @@ guiRouter.singlePizza = (data, callback) => {
         callback(405)
     }
 }
+
+//Add an item to the shopping cart
 guiRouter.addToCart = (data, callback) => {
     if(data.method == 'post') {
         crud.read('carts', data.headers.token, (err, cart) => {
@@ -148,13 +150,13 @@ guiRouter.addToCart = (data, callback) => {
                 })
             }
         })
-       
-    //    crud.read('users')
     } 
     else {
         callback(405)
     }
 }
+
+//Get the items currently in the shopping cart
 guiRouter.getCart = (data, callback) => {
     let cookie = data.headers.cookie.split('=')
     if (data.method == 'get') {
@@ -194,6 +196,7 @@ guiRouter.getCart = (data, callback) => {
                         callback(500, {'Error': 'Could not retreive the menu'})
                     }
                 })  
+                //Get the view for an empty shopping cart case
             } else {
                 const templateData = {
                     title: 'Cart',
@@ -214,6 +217,8 @@ guiRouter.getCart = (data, callback) => {
         callback(405)
     }
 }
+
+//Delete a selected cart
 guiRouter.clearCart = (data, callback) => {
     if (data.method == 'delete') {
         crud.delete('carts', data.headers.token, err => {
@@ -227,6 +232,8 @@ guiRouter.clearCart = (data, callback) => {
         callback(405)
     }
 }
+
+//Remove an item from the cart
 guiRouter.removeFromCart = (data, callback) => {
     console.log(data)
     const cartName = data.headers.token
@@ -246,6 +253,8 @@ guiRouter.removeFromCart = (data, callback) => {
         }
     })
 }
+
+//Make a purchase, buying the items currently present in the cart
 guiRouter.purchase = (data, callback) => {
     if (data.method == 'post') {
         crud.read('tokens', data.headers.token, (err, tokenData) => {
@@ -272,4 +281,6 @@ guiRouter.purchase = (data, callback) => {
         callback(405)
     }
 }
+
+//Export the module
 module.exports = guiRouter
