@@ -203,6 +203,11 @@ guiRouter.getCart = (data, callback) => {
                 }
                 templates.addTemplate('error', templateData, (err, template) => {
                     if (!err && template) {
+                        callback(200, template, 'html')
+                    } else {
+                        callback(500, undefined, 'html')
+                    }
+                })
             }
         })
     } else {
