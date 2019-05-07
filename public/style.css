@@ -353,6 +353,41 @@ h2.cart-heading,
     padding: 5px;
     background: rgb(252, 206, 4);
 }
+.error-title {
+    color: red;
+    font-size: 48px;
+    font-size: 4.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    margin: 50px 0;
+}
+
+.error-code {
+    color: #000;
+    font-size: 70px;
+    font-size: 7rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    padding: 20px;
+    background: rgb(252, 206, 4);
+    border: 2px solid #000;
+    text-align: center;
+}
+
+.error-desc {
+    color: #000;
+    font-weight: 700;
+    font-size: 32px;
+    font-size: 3.2rem;
+    margin: 30px 0;
+    text-align: center;
+}
+.error-menu {
+    margin: 20px 0;
+}
 
 @media all and (min-width: 768px){
     .row.logged-menu-wrapper>div>a:hover{

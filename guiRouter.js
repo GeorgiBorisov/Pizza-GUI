@@ -183,7 +183,6 @@ guiRouter.getCart = (data, callback) => {
                             }
                         }
                         templateData.grandTotal = total
-                        console.log(templateData)
                         templates.addTemplate('cart', templateData, (err, template) => {
                             if (!err && template) {
                                 callback(200, template, 'html')
@@ -196,7 +195,14 @@ guiRouter.getCart = (data, callback) => {
                     }
                 })  
             } else {
-                callback(404, {'Error': 'Could not find a cart with such ID'})
+                const templateData = {
+                    title: 'Cart',
+                    heading: 'Empty cart',
+                    error: 204,
+                    description: 'Your cart is currently empty. You can go to the MENU and fix that :).'
+                }
+                templates.addTemplate('error', templateData, (err, template) => {
+                    if (!err && template) {
             }
         })
     } else {
