@@ -386,15 +386,17 @@ app.logout = () => {
 app.getSessionToken()
 
 window.onload = () => { 
+    if(!app.conf.sessionToken){
+        doc.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`
+    }
     app.bindForms() 
     doc.getElementsByClassName('loged')[0].addEventListener('click', () => {
         app.logout()
     })
     //If cookies are present, but token is not, clear the cookies
-    if(!app.conf.sessionToken){
-        doc.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-    }
+   
 }
+
 //Clear the cookies and session storage after the browser is closed
 if(window.closed){
     sessionStorage.clear()
