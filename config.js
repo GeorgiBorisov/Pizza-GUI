@@ -30,10 +30,7 @@ const env = {
     //Mailgun message URL
     messageURL: `/v3/MAILGUN SENDER/messages`,
     //Mailgun API key
-    mailgunKey: 'MAILGUN KEY',
-   
-
-    dynamic: new RegExp(/menu\/[a-z]\S*/gi) 
+    mailgunKey: 'MAILGUN KEY'
 }
 //Export env object
 module.exports = env
