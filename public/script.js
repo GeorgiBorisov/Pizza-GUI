@@ -264,12 +264,15 @@ app.responseHandler = (id, req, res) => {
                 app.loggedIn(response)
             }
         })
+        //Handle response from login form
     } else if (id == 'log') {
         doc.getElementsByClassName(selected)[0].classList.toggle('hidden')
         app.loggedIn(res)
+        //Handle response from profile update form
     } else if (id == 'upd') {
         doc.getElementsByClassName(selected)[0].classList.toggle('hidden')
         doc.getElementsByClassName('auth-wrapper')[0].classList.toggle('hidden')
+        //Handle response from profile delete form
     } else if (id == 'del') {
        app.logout()
        location.href = '/'
@@ -277,6 +280,7 @@ app.responseHandler = (id, req, res) => {
 }
 //Log the user in
 app.loggedIn = (token) => {
+    //Get the token after logging in
     app.setSessionToken(token)
     if(doc.getElementsByClassName('welcome')[0] !== undefined){
         doc.getElementsByClassName('welcome')[0].classList.toggle('hidden')
@@ -290,7 +294,6 @@ app.loggedIn = (token) => {
     for (let i = 0; i < logFields.length; i++) {
         logFields[i].classList.toggle('hidden')
     }
-    doc.querySelector('input').value = ''
 }
 //Set the session token
 app.setSessionToken = (token) => {
@@ -382,10 +385,11 @@ app.logout = () => {
         }
     })
 }
-
+//Get the session token if it is present
 app.getSessionToken()
 
 window.onload = () => { 
+    //If cookies are present, but token is not, clear the cookies
     if(!app.conf.sessionToken){
         doc.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`
     }
@@ -393,10 +397,7 @@ window.onload = () => {
     doc.getElementsByClassName('loged')[0].addEventListener('click', () => {
         app.logout()
     })
-    //If cookies are present, but token is not, clear the cookies
-   
 }
-
 //Clear the cookies and session storage after the browser is closed
 if(window.closed){
     sessionStorage.clear()
