@@ -59,7 +59,7 @@ if(doc.getElementsByClassName('quantity')[0]){
             body: JSON.stringify(pizza)
         }).then(res => {
             if(res.ok) {
-                app.message('primary', 'Added to cart!')
+                app.message('primary', 'Added to cart!', 'about-pizza')
             }
         }).catch(err => {console.log(err)})
     })
@@ -99,7 +99,6 @@ if(doc.getElementsByClassName('purchase').length > 0){
         }
         const pizzas = doc.getElementsByClassName('cart-item-wrapper')
         Array.from(pizzas).forEach((item) => {
-            console.log(item.children)
             order.data[item.children[0].innerHTML] = item.children[1].innerHTML.slice(1)
         })
         fetch(`${app.conf.baseUrl}purchase`, {
@@ -110,7 +109,18 @@ if(doc.getElementsByClassName('purchase').length > 0){
             },
             body: JSON.stringify(order)
         }).then(res => {
-            res.ok ? console.log('OK') : console.log('ERROR')
+            if (res.ok) {
+                const tokenStr = sessionStorage.getItem('token')
+                const token = JSON.parse(tokenStr)
+                app.clearCart(token)
+                setTimeout(() => {
+                    location.href = '/'
+                }, 4000)
+                
+                app.message('primary', 'The requested items were successfuly purchased', 'cart')
+            } else {
+                app.message('danger', 'The purchase could not be completed', 'cart')
+            }
         }).catch(err => {console.log(err)})
         //console.log(doc.getElementsByClassName('cart-item-wrapper')[0].children)
     })
@@ -126,11 +136,11 @@ if (doc.getElementById('delete')) {
 
 const app = {}
 //Send a flash message to the user
-app.message = (type, msgTxt) => {
+app.message = (type, msgTxt, element) => {
     let msg = doc.createElement('div')
     msg.classList.add(`alert`, `alert-${type}`)
     msg.innerHTML = msgTxt
-    doc.getElementsByClassName('about-pizza')[0].appendChild(msg)
+    doc.getElementsByClassName(element)[0].appendChild(msg)
     doc.getElementsByClassName('alert')[0].addEventListener('click', fadeOut())
     return
 }
@@ -359,14 +369,8 @@ app.getUser = () => {
 app.logout = () => {
     const tokenStr = sessionStorage.getItem('token')
     const token = JSON.parse(tokenStr)
-    fetch(`${app.conf.baseUrl}/clearCart`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'token': `${app.conf.sessionToken.tokenId}`
-        },
-        data: token.tokenId
-    })
+    console.log(token)
+    app.clearCart(token.tokenId)
     let request = { id: token.tokenId }
     sessionStorage.clear()
     doc.cookie = `token=${token.tokenId}; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`
@@ -384,6 +388,19 @@ app.logout = () => {
             console.log(err)
         }
     })
+}
+
+app.clearCart = (token) => {
+    console.log(token)
+    fetch(`${app.conf.baseUrl}/clearCart`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': `${token.tokenId}`
+        },
+        //data: token.tokenId
+    }).catch(err => console.log(err))
+    return
 }
 //Get the session token if it is present
 app.getSessionToken()

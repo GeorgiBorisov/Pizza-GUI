@@ -220,6 +220,7 @@ guiRouter.getCart = (data, callback) => {
 
 //Delete a selected cart
 guiRouter.clearCart = (data, callback) => {
+    console.log(data)
     if (data.method == 'delete') {
         crud.delete('carts', data.headers.token, err => {
             if (!err) {
