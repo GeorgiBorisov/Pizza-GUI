@@ -122,7 +122,6 @@ if(doc.getElementsByClassName('purchase').length > 0){
                 app.message('danger', 'The purchase could not be completed', 'cart')
             }
         }).catch(err => {console.log(err)})
-        //console.log(doc.getElementsByClassName('cart-item-wrapper')[0].children)
     })
 }
 
