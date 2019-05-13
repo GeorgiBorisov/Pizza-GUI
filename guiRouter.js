@@ -184,7 +184,7 @@ guiRouter.getCart = (data, callback) => {
                                 total += templateData.pizza[pizza].total
                             }
                         }
-                        templateData.grandTotal = total
+                        templateData.grandTotal = total.toFixed(2)
                         templates.addTemplate('cart', templateData, (err, template) => {
                             if (!err && template) {
                                 callback(200, template, 'html')
@@ -269,7 +269,7 @@ guiRouter.purchase = (data, callback) => {
                     if (res) {
                         // console.log(res)
                     } else {
-                        
+                        console.log(err)
                     }
                 })
             } else {
