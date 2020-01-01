@@ -1,5 +1,5 @@
 //Include the required NodeJS modules
-const http = require('http')
+const http2 = require('http2')
 const url = require('url')
 const {StringDecoder} = require('string_decoder')
 //Include additinal hand crafted modules
@@ -8,8 +8,12 @@ const guiRouter = require('./guiRouter')
 const helpers = require('./helpers')
 const config = require('./config')
 const checker = require('./checker')
+const cli = require('./cli')
 //Create the server and process the requests
-const server = http.createServer((req, res) => {  
+const server = http2.createSecureServer({
+    key: config.key, 
+    cert: config.cert}) 
+server.on('request', (req, res) => {  
     //Get the request parameters
     let urlParsed = url.parse(req.url, true)
     let path = urlParsed.pathname
@@ -69,6 +73,10 @@ const server = http.createServer((req, res) => {
                 res.setHeader('Content-Type', 'text/plain')
                 reqBodyStr = typeof(reqBody) != undefined ? reqBody : ''
             }
+            if (contentType == 'jxr') {
+                res.setHeader('Content-Type', 'text/jxr')
+                reqBodyStr = typeof(reqBody) != undefined ? reqBody : ''
+            }
             if (contentType == 'css') {
                 res.setHeader('Content-Type', 'text/css')
                 reqBodyStr = typeof(reqBody) != undefined ? reqBody : ''
@@ -111,6 +119,7 @@ const routes = {
     'api/tokens': apiRouter.tokens,
     'api/products': apiRouter.products,
     'api/orders': apiRouter.orders,
-    'api/orders/markCompleted': apiRouter.confirmOrder,
     '404': apiRouter.notFound
 }
+//Start the CLI
+cli()

@@ -1,4 +1,5 @@
 //Set some environmental variables 
+const fs = require('fs')
 const env = {
     //The port for the server to listen to
     port: 3030,
@@ -30,10 +31,11 @@ const env = {
     //Mailgun message URL
     messageURL: `/v3/MAILGUN SENDER/messages`,
     //Mailgun API key
-    mailgunKey: 'MAILGUN KEY'
+    mailgunKey: 'MAILGUN KEY',
+    //read the key
+    key: fs.readFileSync('./cert/localhost-privkey.pem'),
+    //read the certificate
+    cert: fs.readFileSync('./cert/localhost-cert.pem')
 }
 //Export env object
 module.exports = env
-
-// /menu\/[a-z]/gi
-// true

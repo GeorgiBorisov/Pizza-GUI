@@ -35,7 +35,9 @@ api.payment = (phone, orderId, orderItems, callback) => {
                 if (!err && userData) {
                     delete orderItems.completed
                     api.mailReceipt(userData.validEmail ,orderId, orderItems, res => {
-                        console.log('mail receipt: ' + res)
+                        console.log(userData.validEmail)
+                        console.log(orderId)
+                        console.log(orderItems)
                         if (res == 200) {
                             callback(200, {'Message': `Order ${orderId} was created successfully`})
                         } else {
